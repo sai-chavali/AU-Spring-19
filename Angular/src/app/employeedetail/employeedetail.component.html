@@ -1,0 +1,6 @@
+<table>
+  <tr *ngFor="let key of getKeys(data)">
+      <td> {{key}}</td>
+      <td>{{data[key] | json }}</td>
+  </tr>
+</table>

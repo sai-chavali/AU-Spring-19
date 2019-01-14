@@ -1,0 +1,7 @@
+<table style="display:inline">
+  <tr *ngFor = "let user of users">
+    <td style="padding:5px">{{user.name}}</td>
+    <td><button (click)='clickable(user.id)'>Preview</button></td>
+  </tr>
+</table>
+<app-employeedetail [id]='id' style="float:right;padding: 30px"></app-employeedetail>

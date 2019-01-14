@@ -1,0 +1,83 @@
+Key Concepts:
+	droppping  foreign key column:
+		ALTER TABLE `assignment`.`enrollment` 
+		DROP FOREIGN KEY `course`;
+		ALTER TABLE `assignment`.`enrollment`
+		DROP COLUMN `course`,
+		DROP INDEX `course_idx` ;
+		;
+
+	changing int to varchar:
+		ALTER TABLE `assignment`.`course` 
+		CHANGE COLUMN `courseid` `courseid` NVARCHAR(10) NOT NULL ;
+
+	adding index and foreign key
+		ALTER TABLE `assignment`.`enrollment` 
+		ADD COLUMN `course` VARCHAR(20) NOT NULL AFTER `student`,
+		ADD INDEX `course_idx` (`course` ASC) VISIBLE;
+		;
+		ADD CONSTRAINT `course`
+  		FOREIGN KEY (`course`)
+  		REFERENCES `assignment`.`course` (`id`);
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION;
+
+	adding primary key
+		ALTER TABLE `assignment`.`professor` ADD PRIMARY KEY(empid) 
+
+Assignment
+
+1 query: select s.id,s.name Name,Count(c.id) Courses from student s, enrollment e, course c where s.id = e.student and c.id = e.course group by s.id
+O/P:     id,    Name,   Courses
+	'550', 'kiran',  '1'
+	'575', 'naveen', '1'
+	'525', 'sai',    '3'
+	'599', 'syam',   '2'
+
+
+select s.name StudentName, c.name CourseName from student s INNER JOIN enrollment e ON s.id = e.student INNER JOIN course c ON c.id = e.course
+o/p: # 	 StudentName, 	CourseName
+	'sai'	,  	'Angular'
+	'sai', 		'React Native'
+	'sai',		'Machine Learning'
+	'kiran', 	'PL/SQL'
+	'naveen', 	'Machine Learning'
+	'syam', 	'javascript'
+
+	'syam', 	'Machine Learning'
+
+
+2 query: To give course that most people has enrolled and count of enrollment: select course, MAX(cc) Count from (select course, Count(course) cc from enrollment group by course) tmp
+
+complete answer : select tmp3.name CourseName, p.name ProfessorName, p.salary, cost course_cost , duration, cnt No_of_students from professor p INNER JOIN (select id,c.name,cost,duration, cnt, professor from course c INNER JOIN (select course, MAX(cc) cnt from (select course, Count(course) cc from enrollment group by course) tmp) tmp2 where c.id = course) tmp3 where tmp3.professor = p.empid
+o/p: 	 CourseName, ProfessorName, salary,  course_cost, duration, No_of_students
+	'Angular',   'Ankit',     '1000000', '30000',       '3',      '3'
+
+3. 
+DROP PROCEDURE IF EXISTS ProfessorDetailsForStudent;
+delimiter //
+create procedure ProfessorDetailsForStudent (IN id INT(11))
+BEGIN
+ DECLARE studentexists bool;
+ select Count(*) INTO studentexists from student where student.id = id;
+ IF  studentexists THEN
+	select p.name,`phone no`, p.salary, tmp2.courseName from professor p INNER JOIN (select tmp1.name StudentName, c.name CourseName,c.professor  from course c INNER JOIN (select course,s.name from enrollment e INNER JOIN student s ON e.student = s.id and s.id = id) tmp1 ON c.id = tmp1.course) tmp2 ON tmp2.professor = p.empid ;
+ ELSE
+	select "Student doesnot exist with given id.Please provide valid id" ERRORMSG;
+ END IF;
+END //
+
+
+CALL ProfessorDetailsForStudent(526)
+
+o/p:
+	# ERRORMSG
+	'Student doesnot exist with given id.Please provide valid id'
+
+CALL ProfessorDetailsForStudent(550)
+
+o/p:
+	# name,      phone no,    salary,   CourseName
+	'Gauthami', '9823147850', '50000',   'PL/SQL'
+
+
