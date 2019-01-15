@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Games</title>
+        <link rel="stylesheet" href="navbar.css">
+        <script>
+            function changeActive(event){
+                var a = document.getElementsByClassName('active')[0].classList.remove('active');
+                event.classList.add('active');
+            }
+        </script>
+    </head>
+    <body>
+        <nav>
+            <a href='#' class = "active" onclick=changeActive(this)>LUDO</a>
+            <a href='#' onclick=changeActive(this)>MINESWEEPER</a>
+            <a href='#' onclick=changeActive(this)>CHESS</a>
+            <a href='#' onclick=changeActive(this)>Contact</a>
+        </nav>
+    </body>
+</html>
