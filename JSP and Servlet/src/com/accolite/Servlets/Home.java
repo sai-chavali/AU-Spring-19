@@ -19,20 +19,19 @@ import com.accolite.Services.Conn;
 public class Home extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	public void init() {
+	public void init(ServletConfig sc) {
+		System.out.println("Home Servlet Initialized");
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		response.setContentType("text/html");
 		HttpSession session = request.getSession();
-		String name = new String();
-		name = (String) session.getAttribute("name");
+		String name = (String) session.getAttribute("name");
 		if (name == null) {
 			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 			response.sendRedirect("login");
 		} else {
-			
 			RequestDispatcher rd = request.getRequestDispatcher("home.jsp");
 			rd.forward(request, response);
 
@@ -60,7 +59,7 @@ public class Home extends HttpServlet {
 				String password = request.getParameter("password");
 				String nickname = request.getParameter("nickname");
 				String city = request.getParameter("city");
-				int result = stmt.executeUpdate("update users set username='"+username+"',password ='"+password+"',nickname ='"+nickname+"',city='"+city+"' where username = '"+request.getSession().getAttribute("name")+"'");
+				stmt.executeUpdate("update users set username='"+username+"',password ='"+password+"',nickname ='"+nickname+"',city='"+city+"' where username = '"+request.getSession().getAttribute("name")+"'");
 				con.commit();
 				stmt.close();
 				con.close();

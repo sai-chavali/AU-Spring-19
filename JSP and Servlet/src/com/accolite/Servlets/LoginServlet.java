@@ -51,6 +51,7 @@ public class LoginServlet extends HttpServlet {
 					session.setAttribute("nickname", rs.getString("nickname"));
 					session.setAttribute("city", rs.getString("city"));
 				}
+				con.close();
 			} catch (SQLException e) {
 				System.out.println("Sql Exception:" + e);
 				response.setContentType("text/html");
